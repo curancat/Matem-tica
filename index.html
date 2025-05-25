@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Matemática Interativa</title>
+  <style>
+    body {
+      background-color: #000000;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 16px;
+      color: #FFFFFF;
+    }
+
+    .prompt {
+      font-family: monospace;
+      font-size: 16px;
+      background-color: #f0f0f0;
+      color: black;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      margin: 10px;
+    }
+
+    .prompt::before {
+      content: "> ";
+      font-weight: bold;
+    }
+
+    hr {
+      background-color: #32CD32;
+      height: 2px;
+      border: none;
+    }
+
+    .titulo {
+      color: lime;
+      text-align: center;
+    }
+
+    #conteudo {
+      width: 90%;
+      margin: 20px auto;
+      background-color: rgba(0, 25, 0, 0.5);
+      padding: 20px;
+      border: 1px solid #FFFFFF;
+      border-radius: 10px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="titulo">Matemática<br>e<br>suas tecnologias</h1>
+  <hr>
+
+  <div class="prompt" onclick="estudar()">estudar</div>
+  <div class="prompt" onclick="Quiz()">quiz</div>
+
+  <div id="conteudo"></div>
+
+  <script>
+  const quizBtn = document.querySelectorAll(".prompt")[1];
+  quizBtn.onclick = Quiz;
+  function Quiz() {
+    const conteudo = document.getElementById("conteudo");
+
+    // All possible questions
+    const allPerguntas = [
+      {
+        pergunta: "Qual é o valor de 4! (quatro fatorial)?",
+        opcoes: ["4", "8", "24", "16"],
+        correta: 2
+      },
+      {
+        pergunta: "Nos arranjos simples A(n, p), o que significa 'p'?",
+        opcoes: [
+          "Quantidade total de elementos",
+          "Número de repetições",
+          "Ordem dos elementos",
+          "Número de elementos por agrupamento"
+        ],
+        correta: 3
+      },
+      {
+        pergunta: "Se 3 operários constroem um muro em 6 dias, quantos dias levarão 6 operários (proporção inversa)?",
+        opcoes: ["3", "6", "9", "12"],
+        correta: 0
+      },
+      {
+        pergunta: "Qual a probabilidade de tirar cara em uma moeda justa?",
+        opcoes: ["1/3", "2/3", "1/2", "0"],
+        correta: 2
+      },
+      {
+        pergunta: "Quanto é 0! (zero fatorial)?",
+        opcoes: ["0", "1", "Não existe", "Infinito"],
+        correta: 1
+      },
+      {
+        pergunta: "Em permutação simples, a ordem dos elementos:",
+        opcoes: ["Não importa", "Importa", "Depende do problema", "É irrelevante"],
+        correta: 1
+      },
+      {
+        pergunta: "Se 5 kg de arroz custam R$ 20,00, quanto custarão 10 kg?",
+        opcoes: ["R$ 20,00", "R$ 30,00", "R$ 40,00", "R$ 50,00"],
+        correta: 2
+      },
+      {
+        pergunta: "Qual a probabilidade de tirar um número ímpar em um dado de 6 faces?",
+        opcoes: ["1/6", "1/3", "1/2", "2/3"],
+        correta: 2
+      },
+      {
+        pergunta: "Qual a fórmula para combinações simples C(n, p)?",
+        opcoes: ["n! / p!", "n! / (n-p)!", "n! / (p!(n-p)!)", "n! * p!"],
+        correta: 2
+      },
+      {
+        pergunta: "Se 2 torneiras enchem um tanque em 8 horas, quantas torneiras seriam necessárias para encher o tanque em 4 horas?",
+        opcoes: ["2", "3", "4", "5"],
+        correta: 2
+      },
+      {
+        pergunta: "Um evento com probabilidade 0 é considerado:",
+        opcoes: ["Certo", "Impossível", "Provável", "Incerteza"],
+        correta: 1
+      },
+      {
+        pergunta: "O que é um espaço amostral?",
+        opcoes: [
+          "O resultado de um evento",
+          "O número de casos favoráveis",
+          "Todos os resultados possíveis de um experimento",
+          "A probabilidade de um evento"
+        ],
+        correta: 2
+      },
+      {
+        pergunta: "Quantos anagramas podemos formar com a palavra 'ROMA'?",
+        opcoes: ["4", "12", "24", "48"],
+        correta: 2
+      },
+      {
+        pergunta: "Se um carro faz 100 km com 10 litros de gasolina, quantos litros ele gasta para fazer 250 km?",
+        opcoes: ["15", "20", "25", "30"],
+        correta: 2
+      },
+      {
+        pergunta: "Qual a probabilidade de tirar um 'ÁS' de um baralho de 52 cartas?",
+        opcoes: ["1/52", "4/52", "1/13", "2/13"],
+        correta: 2
+      },
+      {
+        pergunta: "No cálculo de fatorial, qual a única exceção para n! = n × (n−1) × ... × 1?",
+        opcoes: ["n=1", "n=0", "n=2", "n=3"],
+        correta: 1
+      },
+      {
+        pergunta: "A principal diferença entre arranjo e combinação é que no arranjo:",
+        opcoes: [
+          "A ordem não importa",
+          "A ordem importa",
+          "Os elementos podem se repetir",
+          "É sempre com todos os elementos"
+        ],
+        correta: 1
+      },
+      {
+        pergunta: "Se 5 pedreiros constroem uma casa em 20 dias, quantos dias levarão 10 pedreiros?",
+        opcoes: ["5", "10", "15", "20"],
+        correta: 1
+      },
+      {
+        pergunta: "Qual a probabilidade de tirar 2 coroas em 2 lançamentos de moeda?",
+        opcoes: ["1/2", "1/3", "1/4", "1"],
+        correta: 2
+      },
+      {
+        pergunta: "O que significa 'n' na fórmula do fatorial?",
+        opcoes: ["Número de repetições", "Número de elementos", "Número de casos", "Número de eventos"],
+        correta: 1
+      },
+      {
+        pergunta: "Um problema de regra de três é considerado 'direto' quando:",
+        opcoes: [
+          "As grandezas diminuem juntas",
+          "Uma grandeza aumenta e a outra diminui",
+          "Ambas as grandezas aumentam ou diminuem na mesma proporção",
+          "As grandezas são independentes"
+        ],
+        correta: 2
+      },
+      {
+        pergunta: "A soma das probabilidades de todos os eventos possíveis em um espaço amostral é sempre:",
+        opcoes: ["0", "0.5", "1", "Depende do evento"],
+        correta: 2
+      },
+      {
+        pergunta: "Em arranjos simples, os elementos devem ser:",
+        opcoes: ["Iguais", "Repetidos", "Distintos", "Aleatórios"],
+        correta: 2
+      },
+      {
+        pergunta: "Se 3 caixas de lápis custam R$ 9,00, quanto custam 7 caixas?",
+        opcoes: ["R$ 15,00", "R$ 18,00", "R$ 21,00", "R$ 27,00"],
+        correta: 2
+      },
+      {
+        pergunta: "Qual a probabilidade de tirar um rei ou uma rainha de um baralho de 52 cartas?",
+        opcoes: ["2/52", "4/52", "8/52", "1/13"],
+        correta: 2
+      }
+    ];
+
+    // Shuffle all questions and select a random subset (max 30)
+    let perguntas = allPerguntas.sort(() => Math.random() - 0.5).slice(0, Math.floor(Math.random() * 26) + 5); // Between 5 and 30 questions
+
+    // Shuffle alternatives and store the new correct index
+    perguntas.forEach(p => {
+      const opOriginal = [...p.opcoes];
+      const corretaTexto = p.opcoes[p.correta];
+      // Fisher-Yates (Knuth) shuffle for options
+      for (let i = opOriginal.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opOriginal[i], opOriginal[j]] = [opOriginal[j], opOriginal[i]];
+      }
+      p.opcoes = opOriginal;
+      p.correta = p.opcoes.indexOf(corretaTexto);
+    });
+
+    let html = `<h2>Quiz de Matemática</h2>`;
+
+    perguntas.forEach((p, i) => {
+      html += `<div style="margin-bottom: 20px;"><strong>${i + 1}. ${p.pergunta}</strong><br>`;
+      p.opcoes.forEach((opcao, j) => {
+        html += `
+          <label>
+            <input type="radio" name="q${i}" value="${j}">
+            ${opcao}
+          </label><br>`;
+      });
+      html += `</div>`;
+    });
+
+    html += `<button onclick="corrigirQuiz()">Corrigir</button><div id="resultado"></div>`;
+
+    // Store shuffled questions for later correction
+    conteudo.dataset.quizData = JSON.stringify(perguntas);
+    conteudo.innerHTML = html;
+  }
+
+  function corrigirQuiz() {
+    const conteudo = document.getElementById("conteudo");
+    conteudo.innerHTML = `<h2>Processando Respostas...</h2>`; // Transition message
+
+    setTimeout(() => { // Simulate a slight delay for transition effect
+      const perguntas = JSON.parse(conteudo.dataset.quizData);
+      let pontos = 0;
+      let resultadoHtml = ""; // Use a new variable for results HTML
+
+      perguntas.forEach((p, i) => {
+        const resposta = document.querySelector(`input[name="q${i}"]:checked`);
+        if (resposta) {
+          if (parseInt(resposta.value) === p.correta) {
+            pontos++;
+            resultadoHtml += `<p style="color: lime;">Questão ${i + 1} correta!</p>`;
+          } else {
+            const correta = p.opcoes[p.correta];
+            resultadoHtml += `<p style="color: red;">Questão ${i + 1} incorreta. A resposta correta era: <strong>${correta}</strong></p>`;
+          }
+        } else {
+          const correta = p.opcoes[p.correta];
+          resultadoHtml += `<p style="color: yellow;">Questão ${i + 1} não respondida. A resposta correta era: <strong>${correta}</strong></p>`;
+        }
+      });
+
+      conteudo.innerHTML = `
+        <h2>Resultados do Quiz</h2>
+        <hr>
+        <p><strong>Você acertou ${pontos} de ${perguntas.length} perguntas.</strong></p>
+        ${resultadoHtml}
+        <button onclick="Quiz()">Tentar Novamente</button>
+      `;
+    }, 1000); // 1 second delay
+  }
+    function estudar() {
+      const escolha = prompt("Selecione o assunto de matemática:\n1. Fatorial\n2. Arranjos Simples\n3. Regra de Três Simples\n4. Probabilidade");
+      const conteudo = document.getElementById("conteudo");
+
+      if (escolha === '1') {
+        conteudo.innerHTML = `
+          <h2>Fatorial (!) - O que é e para que serve?</h2>
+          <p>O <strong>fatorial</strong> de um número natural 'n', simbolizado por <strong>n!</strong>, é uma operação matemática que consiste em multiplicar 'n' por todos os números inteiros positivos menores que ele, até chegar a 1.</p>
+          <p>É uma ferramenta fundamental em áreas como <strong>combinatória</strong> e <strong>probabilidade</strong>, pois nos ajuda a contar o número de maneiras de organizar ou selecionar itens.</p>
+          
+          <h3>Fórmula e Cálculo:</h3>
+          <p>A fórmula geral para o fatorial de um número inteiro positivo 'n' é:</p>
+          <p> n! = n.(n-1).(n-2)...</p>
+          <p><strong>Exemplo Prático:</strong> Vamos calcular <strong>5!</strong></p>
+          <p>$$ 5! = 5.4.3.2.1 = 120</p>
+          <p>Isso significa que existem 120 maneiras diferentes de organizar 5 objetos distintos em uma fila.</p>
+
+          <h3>Casos Especiais:</h3>
+          <ul>
+            <li><strong>0! = 1:</strong> Por definição matemática, o fatorial de zero é 1. Isso faz sentido em muitas fórmulas de combinatória.</li>
+            <li><strong>1! = 1:</strong> O fatorial de um é 1, pois não há outros números positivos menores para multiplicar.</li>
+          </ul>
+          
+          <h3>Aplicações no Dia a Dia:</h3>
+          <p>Embora pareça abstrato, o fatorial está presente em cenários como:</p>
+          <ul>
+            <li>Organizar a ordem de apresentação de trabalhos.</li>
+            <li>Calcular o número de senhas possíveis com caracteres distintos.</li>
+            <li>Determinar o número de maneiras de arranjar pessoas em assentos.</li>
+          </ul>
+        `;
+      } else if (escolha === '2') {
+        conteudo.innerHTML = `
+          <h2>Arranjos Simples - Ordem é a Chave!</h2>
+          <p>Em <strong>Arranjos Simples</strong>, estamos interessados em formar agrupamentos onde a <strong>ordem dos elementos é crucial</strong> e os elementos são <strong>distintos</strong>. Pense em como você organiza letras para formar palavras ou números para criar códigos – a posição de cada item faz toda a diferença!</p>
+          
+          <h3>Quando Usar Arranjos?</h3>
+          <p>Use arranjos quando:</p>
+          <ul>
+            <li>A ordem de escolha dos elementos importa.</li>
+            <li>Você está selecionando um subconjunto de elementos de um conjunto maior.</li>
+            <li>Os elementos não podem se repetir no mesmo agrupamento.</li>
+          </ul>
+
+          <h3>A Fórmula Mágica:</h3>
+          <p>A fórmula para calcular o número de arranjos simples de 'n' elementos tomados 'p' a 'p' é:</p>
+          <p>A(n, p) = n!\\(n - p)! </p>
+          <p><strong>Onde:</strong></p>
+          <ul>
+            <li><strong>n:</strong> É o número total de elementos disponíveis no conjunto maior.</li>
+            <li><strong>p:</strong> É o número de elementos que você vai usar para formar cada agrupamento.</li>
+          </ul>
+
+          <h3>Exemplo Detalhado: Criando Códigos</h3>
+          <p>Imagine que você tem 5 letras diferentes (A, B, C, D, E) e quer formar códigos de 3 letras distintas. Quantos códigos únicos você pode criar?</p>
+          <p>Aqui, <strong>n = 5</strong> (total de letras) e <strong>p = 3</strong> (letras por código).</p>
+          <p>Aplicando a fórmula:</p>
+          <p> A(5, 3) = 5!\\(5 - 3)!=<br>5!\\2!</p>
+          <p>Calculando os fatoriais:</p>
+          <p>5! = 5.4.3.2.1 = 120</p>
+          <p>2! = 2.1 = 2 </p>
+          <p>Agora, dividindo:</p>
+          <p>A(5, 3) = 120\\2 = 60</p>
+          <p>Isso significa que você pode formar <strong>60 códigos</strong> diferentes de 3 letras com as 5 letras disponíveis, considerando que a ordem importa (por exemplo, "ABC" é diferente de "CBA").</p>
+        `;
+      } else if (escolha === '3') {
+        conteudo.innerHTML = `
+          <h2>Regra de Três Simples - Resolvendo Proporções!</h2>
+          <p>A <strong>Regra de Três Simples</strong> é uma técnica poderosa para resolver problemas que envolvem a relação entre <strong>duas grandezas proporcionais</strong>. Ela nos ajuda a encontrar um valor desconhecido quando conhecemos três valores de grandezas relacionadas.</p>
+          
+          <h3>Tipos de Proporção:</h3>
+          <p>Existem dois tipos principais de proporção que você precisa identificar:</p>
+
+          <h3>1. Proporção Direta:</h3>
+          <p>Ocorre quando as grandezas variam no <strong>mesmo sentido</strong>. Ou seja, se uma grandeza aumenta, a outra também aumenta na mesma proporção; se uma diminui, a outra também diminui.</p>
+          <p><strong>Exemplo:</strong> Quanto mais produtos você compra, mais dinheiro você gasta.</p>
+          <p><strong>Configuração:</strong></p>
+          <p>Grandeza A (valor 1) -------- Grandeza B (valor 3)</p>
+          <p>Grandeza A (valor 2) -------- Grandeza B (x)</p>
+          <p><strong>Para resolver (multiplicação cruzada):</strong></p>
+          <p> {valor1}\\{valor2} = {valor3}\\{x}<br>valor1 x = valor2 </p>
+          <p><strong>Exemplo Prático:</strong> Se 2 kg de maçãs custam R$ 8,00, quanto custarão 5 kg?</p>
+          <p>2 kg ----- R$ 8,00</p>
+          <p>5 kg ----- x</p>
+          <p> 2\\8 = 5\\{x}<br>2x = 40<br>x=40\\2<br>x = 20 </p>
+          <p>Então, 5 kg de maçãs custarão R$ 20,00.</p>
+
+          <h3>2. Proporção Inversa:</h3>
+          <p>Ocorre quando as grandezas variam em <strong>sentidos opostos</strong>. Ou seja, se uma grandeza aumenta, a outra diminui; se uma diminui, a outra aumenta.</p>
+          <p><strong>Exemplo:</strong> Quanto mais trabalhadores você tem, menos tempo leva para concluir um projeto.</p>
+          <p><strong>Configuração:</strong></p>
+          <p>Grandeza A (valor 1) -------- Grandeza B (valor 3)</p>
+          <p>Grandeza A (valor 2) -------- Grandeza B (x)</p>
+          <p><strong>Para resolver (multiplicação em linha reta):</strong></p>
+          <p>valor1 . valor3 = valor2 . {x}</p>
+          <p><strong>Exemplo Prático:</strong> Se 3 operários constroem um muro em 10 dias, quantos dias levarão 5 operários?</p>
+          <p>3 operários ----- 10 dias</p>
+          <p>5 operários ----- x</p>
+          <p>(Como é inversa, inverta uma das grandezas para multiplicar cruzado ou multiplique em linha reta diretamente)</p>
+          <p> 3 . 10 = 5 . x<br>30 = 5x<br>x=30\\5<br>x = 6 $$</p>
+          <p>Então, 5 operários levarão 6 dias para construir o muro.</p>
+        `;
+      } else if (escolha === '4') {
+        conteudo.innerHTML = `
+          <h2>Probabilidade - As Chances de um Evento!</h2>
+          <p>A <strong>probabilidade</strong> é o estudo matemático das chances de um determinado evento ocorrer. Ela nos permite quantificar a incerteza e tomar decisões mais informadas em diversas situações, desde jogos de azar até previsões climáticas.</p>
+          
+          <h3>Fórmula Fundamental da Probabilidade:</h3>
+          <p>A probabilidade de um evento (P(E)) é calculada pela razão entre o número de casos favoráveis (resultados que nos interessam) e o número total de casos possíveis (todos os resultados que podem ocorrer).</p>
+          <p>P(E) = casos\\possíbilidades</p>
+
+          <h3>Exemplo Ilustrativo: Lançando um Dado</h3>
+          <p>Qual a probabilidade de tirar um número par ao lançar um dado justo de 6 faces?</p>
+          <ul>
+            <li><strong>Casos Favoráveis:</strong> Os números pares em um dado são 2, 4, 6. Portanto, temos <strong>3 casos favoráveis</strong>.</li>
+            <li><strong>Casos Possíveis (Espaço Amostral):</strong> Os números possíveis ao lançar um dado são 1, 2, 3, 4, 5, 6. Temos <strong>6 casos possíveis</strong>.</li>
+          </ul>
+          <p>Aplicando a fórmula:</p>
+          <p>P(número par) =<br> 3\\6 = 1\\2 = <br>0.5 = 50</p>
+          <p>Isso significa que há uma chance de 50% de tirar um número par.</p>
+
+          <h3>Conceitos Chave em Probabilidade:</h3>
+          <ul>
+            <li><strong>Evento:</strong> É qualquer resultado ou conjunto de resultados de um experimento. Ex: "tirar cara" ao jogar uma moeda.</li>
+            <li><strong>Espaço Amostral (Ω):</strong> É o conjunto de todos os resultados possíveis de um experimento. Ex: Ao jogar um dado, Ω = {1, 2, 3, 4, 5, 6}.</li>
+            <li><strong>Evento Impossível:</strong> Um evento que nunca pode ocorrer. Sua probabilidade é <strong>P(E) = 0</strong>. Ex: Tirar um 7 em um dado de 6 faces.</li>
+            <li><strong>Evento Certo:</strong> Um evento que com certeza ocorrerá. Sua probabilidade é <strong>P(E) = 1 (ou 100%)</strong>. Ex: Tirar um número entre 1 e 6 ao lançar um dado.</li>
+            <li><strong>Probabilidade Complementar:</strong> A probabilidade de um evento não ocorrer é 1 menos a probabilidade de ele ocorrer. P(E) = 1 - P(E).</li>
+          </ul>
+          <p>Entender a probabilidade nos ajuda a entender o mundo ao nosso redor e a tomar decisões mais inteligentes, avaliando riscos e oportunidades.</p>
+        `;
+      } else {
+        conteudo.innerHTML = "<p>Opção inválida. Por favor, digite 1, 2, 3 ou 4 para selecionar um assunto.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
