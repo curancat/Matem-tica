@@ -254,39 +254,42 @@
   }
 
   function corrigirQuiz() {
-    const conteudo = document.getElementById("conteudo");
-    conteudo.innerHTML = `<h2>Processando Respostas...</h2>`; // Transition message
+  const conteudo = document.getElementById("conteudo");
+  // 1) recupera o array de perguntas ANTES de mudar o innerHTML
+  const perguntas = JSON.parse(conteudo.dataset.quizData);
 
-    setTimeout(() => { // Simulate a slight delay for transition effect
-      const perguntas = JSON.parse(conteudo.dataset.quizData);
-      let pontos = 0;
-      let resultadoHtml = ""; // Use a new variable for results HTML
+  // 2) agora sim mostra a mensagem de “Processando…”
+  conteudo.innerHTML = `<h2>Processando Respostas...</h2>`;
 
-      perguntas.forEach((p, i) => {
-        const resposta = document.querySelector(`input[name="q${i}"]:checked`);
-        if (resposta) {
-          if (parseInt(resposta.value) === p.correta) {
-            pontos++;
-            resultadoHtml += `<p style="color: lime;">Questão ${i + 1} correta!</p>`;
-          } else {
-            const correta = p.opcoes[p.correta];
-            resultadoHtml += `<p style="color: red;">Questão ${i + 1} incorreta. A resposta correta era: <strong>${correta}</strong></p>`;
-          }
-        } else {
-          const correta = p.opcoes[p.correta];
-          resultadoHtml += `<p style="color: yellow;">Questão ${i + 1} não respondida. A resposta correta era: <strong>${correta}</strong></p>`;
-        }
-      });
+  setTimeout(() => {
+    let pontos = 0;
+    let resultadoHtml = "";
 
-      conteudo.innerHTML = `
-        <h2>Resultados do Quiz</h2>
-        <hr>
-        <p><strong>Você acertou ${pontos} de ${perguntas.length} perguntas.</strong></p>
-        ${resultadoHtml}
-        <button onclick="Quiz()">Tentar Novamente</button>
-      `;
-    }, 1000); // 1 second delay
+    perguntas.forEach((p, i) => {
+      const resposta = document.querySelector(`input[name="q${i}"]:checked`);
+      if (resposta && parseInt(resposta.value, 10) === p.correta) {
+        pontos++;
+        resultadoHtml += `<p style="color: lime;">Questão ${i + 1} correta!</p>`;
+      } else {
+        const correta = p.opcoes[p.correta];
+        const cor = resposta ? "red" : "yellow";
+        const texto = resposta
+          ? `Questão ${i + 1} incorreta. A resposta correta era: <strong>${correta}</strong>`
+          : `Questão ${i + 1} não respondida. A resposta correta era: <strong>${correta}</strong>`;
+        resultadoHtml += `<p style="color: ${cor};">${texto}</p>`;
+      }
+    });
+
+    conteudo.innerHTML = `
+      <h2>Resultados do Quiz</h2>
+      <hr>
+      <p><strong>Você acertou ${pontos} de ${perguntas.length} perguntas.</strong></p>
+      ${resultadoHtml}
+      <button onclick="Quiz()">Tentar Novamente</button>
+    `;
+  }, 1000);
   }
+    
     
     function estudar() {
       const escolha = prompt("Selecione o assunto de matemática:\n1. Fatorial\n2. Arranjos Simples\n3. Regra de Três Simples\n4. Probabilidade");
