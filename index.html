@@ -252,13 +252,16 @@
     conteudo.dataset.quizData = JSON.stringify(perguntas);
     conteudo.innerHTML = html;
   }
-
-  function corrigirQuiz() {
+    function corrigirQuiz() {
   const conteudo = document.getElementById("conteudo");
-  // 1) recupera o array de perguntas ANTES de mudar o innerHTML
+  // 1) PEGUE as perguntas e também as respostas SELECIONADAS ANTES de mexer no DOM
   const perguntas = JSON.parse(conteudo.dataset.quizData);
+  const respostasUsuario = perguntas.map((p, i) => {
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    return sel ? parseInt(sel.value, 10) : null;
+  });
 
-  // 2) agora sim mostra a mensagem de “Processando…”
+  // 2) Agora sim podemos mostrar a “tela de processamento”
   conteudo.innerHTML = `<h2>Processando Respostas...</h2>`;
 
   setTimeout(() => {
@@ -266,20 +269,20 @@
     let resultadoHtml = "";
 
     perguntas.forEach((p, i) => {
-      const resposta = document.querySelector(`input[name="q${i}"]:checked`);
-      if (resposta && parseInt(resposta.value, 10) === p.correta) {
+      const resp = respostasUsuario[i];
+      if (resp === p.correta) {
         pontos++;
         resultadoHtml += `<p style="color: lime;">Questão ${i + 1} correta!</p>`;
       } else {
-        const correta = p.opcoes[p.correta];
-        const cor = resposta ? "red" : "yellow";
-        const texto = resposta
-          ? `Questão ${i + 1} incorreta. A resposta correta era: <strong>${correta}</strong>`
-          : `Questão ${i + 1} não respondida. A resposta correta era: <strong>${correta}</strong>`;
+        const cor    = resp === null ? "yellow" : "red";
+        const texto  = resp === null
+          ? `Questão ${i + 1} não respondida. A resposta correta era: <strong>${p.opcoes[p.correta]}</strong>`
+          : `Questão ${i + 1} incorreta. A resposta correta era: <strong>${p.opcoes[p.correta]}</strong>`;
         resultadoHtml += `<p style="color: ${cor};">${texto}</p>`;
       }
     });
 
+    // 3) Finalmente renderizamos o placar e o detalhamento
     conteudo.innerHTML = `
       <h2>Resultados do Quiz</h2>
       <hr>
@@ -288,7 +291,9 @@
       <button onclick="Quiz()">Tentar Novamente</button>
     `;
   }, 1000);
-  }
+    }
+    
+    
     
     
     function estudar() {
