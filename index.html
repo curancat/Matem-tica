@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Matemática Interativa</title>
+  <title>Estudos para a prova de matemática 3 ano</title>
   <style>
     body {
       background-color: #000000;
@@ -254,14 +254,11 @@
   }
     function corrigirQuiz() {
   const conteudo = document.getElementById("conteudo");
-  // 1) PEGUE as perguntas e também as respostas SELECIONADAS ANTES de mexer no DOM
   const perguntas = JSON.parse(conteudo.dataset.quizData);
   const respostasUsuario = perguntas.map((p, i) => {
     const sel = document.querySelector(`input[name="q${i}"]:checked`);
     return sel ? parseInt(sel.value, 10) : null;
   });
-
-  // 2) Agora sim podemos mostrar a “tela de processamento”
   conteudo.innerHTML = `<h2>Processando Respostas...</h2>`;
 
   setTimeout(() => {
@@ -281,8 +278,6 @@
         resultadoHtml += `<p style="color: ${cor};">${texto}</p>`;
       }
     });
-
-    // 3) Finalmente renderizamos o placar e o detalhamento
     conteudo.innerHTML = `
       <h2>Resultados do Quiz</h2>
       <hr>
